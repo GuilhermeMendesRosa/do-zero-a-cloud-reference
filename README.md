@@ -11,3 +11,8 @@ O workshop foi pensado para duas aulas:
 O planejamento completo está em
 [docs/plano-workshop-do-zero-a-cloud.md](docs/plano-workshop-do-zero-a-cloud.md).
 
+A proposta técnica baseada no desafio da Ottimizza está em
+[docs/proposta-implementacao-kanban.md](docs/proposta-implementacao-kanban.md).
+
+A implementação de referência do backend está em
+[projetos/kanban-backend](projetos/kanban-backend).

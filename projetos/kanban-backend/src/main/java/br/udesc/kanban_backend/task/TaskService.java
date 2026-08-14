@@ -1,0 +1,145 @@
+package br.udesc.kanban_backend.task;
+
+import br.udesc.kanban_backend.column.BoardColumn;
+import br.udesc.kanban_backend.column.ColumnRepository;
+import br.udesc.kanban_backend.shared.BadRequestException;
+import br.udesc.kanban_backend.shared.ResourceNotFoundException;
+import br.udesc.kanban_backend.task.dto.CreateTaskRequest;
+import br.udesc.kanban_backend.task.dto.TaskResponse;
+import br.udesc.kanban_backend.task.dto.UpdateTaskRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+@Service
+public class TaskService {
+
+    private final TaskRepository taskRepository;
+    private final ColumnRepository columnRepository;
+    private final Clock clock;
+
+    public TaskService(TaskRepository taskRepository, ColumnRepository columnRepository, Clock clock) {
+        this.taskRepository = taskRepository;
+        this.columnRepository = columnRepository;
+        this.clock = clock;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskResponse> listByColumn(UUID columnId) {
+        ensureColumnExists(columnId);
+        return taskRepository.findByColumn_IdOrderByPositionAsc(columnId).stream()
+                .map(TaskService::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public TaskResponse create(UUID columnId, CreateTaskRequest request) {
+        if (request.columnId() != null && !columnId.equals(request.columnId())) {
+            throw new BadRequestException("O columnId do body deve ser igual ao columnId da URL");
+        }
+
+        BoardColumn column = findColumn(columnId);
+        Instant createdAt = request.createdAt() == null ? clock.instant() : request.createdAt();
+        validateDueDate(createdAt, request.dueDate());
+
+        KanbanTask task = taskRepository.save(new KanbanTask(
+                request.name().trim(),
+                request.position(),
+                createdAt,
+                request.dueDate(),
+                Boolean.TRUE.equals(request.completed()),
+                normalizeTags(request.tags()),
+                column
+        ));
+        return toResponse(task);
+    }
+
+    @Transactional
+    public TaskResponse update(UUID taskId, UpdateTaskRequest request) {
+        KanbanTask task = findTask(taskId);
+
+        if (request.createdAt() != null && !request.createdAt().equals(task.getCreatedAt())) {
+            throw new BadRequestException("createdAt não pode ser alterado");
+        }
+
+        BoardColumn column = findColumn(request.columnId());
+        validateDueDate(task.getCreatedAt(), request.dueDate());
+        task.update(
+                request.name().trim(),
+                request.position(),
+                request.dueDate(),
+                request.completed(),
+                normalizeTags(request.tags()),
+                column
+        );
+        return toResponse(task);
+    }
+
+    @Transactional
+    public void delete(UUID taskId) {
+        taskRepository.delete(findTask(taskId));
+    }
+
+    private List<String> normalizeTags(List<String> tags) {
+        if (tags == null) {
+            return List.of();
+        }
+
+        Set<String> uniqueTags = new LinkedHashSet<>();
+        List<String> normalizedTags = new ArrayList<>();
+        for (String tag : tags) {
+            String normalized = tag.trim();
+            if (!uniqueTags.add(normalized)) {
+                throw new BadRequestException("Tags duplicadas não são permitidas: %s".formatted(normalized));
+            }
+            normalizedTags.add(normalized);
+        }
+        return normalizedTags;
+    }
+
+    private void validateDueDate(Instant createdAt, Instant dueDate) {
+        if (dueDate != null && dueDate.isBefore(createdAt)) {
+            throw new BadRequestException("dueDate não pode ser anterior a createdAt");
+        }
+    }
+
+    private void ensureColumnExists(UUID columnId) {
+        if (!columnRepository.existsById(columnId)) {
+            throw new ResourceNotFoundException("Coluna %s não encontrada".formatted(columnId));
+        }
+    }
+
+    private BoardColumn findColumn(UUID columnId) {
+        return columnRepository.findById(columnId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Coluna %s não encontrada".formatted(columnId)
+                ));
+    }
+
+    private KanbanTask findTask(UUID taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Tarefa %s não encontrada".formatted(taskId)
+                ));
+    }
+
+    private static TaskResponse toResponse(KanbanTask task) {
+        return new TaskResponse(
+                task.getId(),
+                task.getName(),
+                task.getPosition(),
+                task.getCreatedAt(),
+                task.getDueDate(),
+                task.isCompleted(),
+                task.getTags(),
+                task.getColumn().getId()
+        );
+    }
+}

@@ -26,8 +26,7 @@ banco PostgreSQL publicados no Railway.
 - Spring Web;
 - Spring Data JPA;
 - Bean Validation;
-- H2 para desenvolvimento local;
-- PostgreSQL no ambiente de cloud;
+- PostgreSQL nos ambientes local e cloud;
 - Swagger/OpenAPI;
 - Docker;
 - GitHub;
@@ -41,7 +40,7 @@ O instrutor fornecerá um projeto base contendo:
 - frontend funcional;
 - casca do backend;
 - entidades e repositories, conforme o tempo disponível;
-- configuração do H2;
+- configuração do PostgreSQL local;
 - profiles local e cloud;
 - Swagger;
 - CORS;
@@ -96,7 +95,7 @@ reduzido para caber nas duas aulas.
 ### Ambiente local
 
 ```text
-Frontend local → API Spring Boot → H2
+Frontend local → API Spring Boot → PostgreSQL local
 ```
 
 ### Ambiente de cloud
@@ -127,7 +126,7 @@ Conteúdo:
 - fluxo `Controller → Service → Repository`;
 - entidades, DTOs e relacionamentos;
 - validação e tratamento de erros;
-- H2;
+- PostgreSQL e configuração de conexão;
 - Swagger.
 
 Os exemplos apresentados devem usar o mesmo domínio Kanban que será
@@ -148,7 +147,7 @@ Roteiro:
 ### Resultado esperado
 
 ```text
-Frontend local → API local → H2
+Frontend local → API local → PostgreSQL local
 ```
 
 O grupo deverá terminar a aula com pelo menos um fluxo completo funcionando no
@@ -209,8 +208,21 @@ Cada grupo deverá terminar com URLs públicas para frontend e backend.
 
 ## Configuração de ambientes
 
-Localmente, a aplicação utilizará H2. No Railway, utilizará PostgreSQL por meio
-do profile `cloud`.
+Localmente e no Railway, a aplicação utilizará PostgreSQL. Os profiles `local`
+e `cloud` mudarão apenas os dados de conexão, mantendo o mesmo banco e o mesmo
+dialeto SQL nos dois ambientes.
+
+Configuração local sugerida:
+
+```properties
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/kanban_workshop}
+spring.datasource.username=${DB_USERNAME:workshop}
+spring.datasource.password=${DB_PASSWORD:workshop}
+```
+
+O usuário e a senha acima são exclusivos para o banco local do laboratório. O
+banco `kanban_workshop` e o usuário `workshop` deverão ser criados e validados
+antes da aula.
 
 Variáveis esperadas no Railway:
 
@@ -247,15 +259,14 @@ O backend deverá aceitar o domínio do frontend em sua configuração de CORS.
 
 O workshop terá resultados intermediários:
 
-1. API local funcionando;
+1. API local conectada ao PostgreSQL;
 2. frontend local conectado;
-3. API publicada com H2;
-4. PostgreSQL conectado;
-5. frontend publicado.
+3. API publicada e conectada ao PostgreSQL do Railway;
+4. frontend publicado.
 
-Se houver problema com PostgreSQL, o grupo ainda poderá demonstrar a API
-publicada com H2. Se houver problema com o frontend, poderá demonstrar a API
-pelo Swagger.
+Se houver problema no deploy ou no PostgreSQL do Railway, o grupo ainda poderá
+demonstrar o fluxo completo no ambiente local. Se houver problema com o
+frontend, poderá demonstrar a API pelo Swagger.
 
 ## Preparação necessária
 
@@ -268,6 +279,8 @@ Antes do workshop, o instrutor deverá:
 - testar o fluxo completo com uma conta nova;
 - validar o Railway na rede da universidade;
 - confirmar Java, Git e Node.js nos computadores;
+- confirmar que o serviço PostgreSQL está ativo e que o banco local aceita
+  conexões com as credenciais do workshop;
 - preparar um roteiro visual de deploy;
 - verificar as condições atuais do trial gratuito;
 - manter uma aplicação de demonstração publicada.
@@ -295,7 +308,7 @@ preparado e checkpoints durante as atividades.
 - framework do frontend;
 - contrato final da API;
 - quanto do backend será entregue pronto;
-- uso obrigatório ou opcional do PostgreSQL;
+- uso opcional de Testcontainers nos testes de integração;
 - formato de avaliação.
 
 ## Referências
@@ -305,4 +318,3 @@ preparado e checkpoints durante as atividades.
 - [Railway: trial gratuito](https://docs.railway.com/pricing/free-trial)
 - [Railway: static hosting](https://docs.railway.com/guides/static-hosting)
 - [AWS: serviços de cloud](https://aws.amazon.com/products/)
-
