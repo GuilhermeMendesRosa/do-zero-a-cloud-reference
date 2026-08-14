@@ -7,27 +7,15 @@ tarefas. A implementação segue o contrato do desafio da Ottimizza.
 
 - Java 21;
 - PostgreSQL 14 ou superior;
-- banco local `kanban_workshop` acessível pela aplicação.
+- banco local `kanban` acessível pela aplicação.
 
-Configuração local sugerida:
-
-```sql
-CREATE USER workshop WITH PASSWORD 'workshop';
-CREATE DATABASE kanban_workshop OWNER workshop;
-```
-
-Se o usuário já existir, padronize a senha local com:
-
-```sql
-ALTER USER workshop WITH PASSWORD 'workshop';
-```
 
 As credenciais podem ser substituídas por variáveis de ambiente:
 
 ```text
-DB_URL=jdbc:postgresql://localhost:5432/kanban_workshop
-DB_USERNAME=workshop
-DB_PASSWORD=workshop
+DB_URL=jdbc:postgresql://localhost:5432/kanban
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
 ```
 
 ## Executar
@@ -77,8 +65,8 @@ Variáveis esperadas no serviço do backend:
 SPRING_DATASOURCE_URL=jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}
 SPRING_DATASOURCE_USERNAME=${{Postgres.PGUSER}}
 SPRING_DATASOURCE_PASSWORD=${{Postgres.PGPASSWORD}}
-CORS_ALLOWED_ORIGINS=https://endereco-do-frontend
 ```
 
 O Railway fornece `PORT` automaticamente. O `Dockerfile` já respeita essa
-configuração por meio da propriedade `server.port`.
+configuração por meio da propriedade `server.port`. Durante o workshop, a API
+aceita requisições de qualquer origem nos endpoints `/api/**`.

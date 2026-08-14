@@ -351,8 +351,8 @@ Para preservar tempo de prática, o repositório inicial deverá conter:
 - dependências Web, Data JPA, Validation, PostgreSQL, Actuator e OpenAPI;
 - profiles `local` e `cloud`;
 - Dockerfile;
-- CORS configurável;
-- frontend funcional com campo para a URL da API;
+- CORS liberado para qualquer origem durante o workshop;
+- frontend funcional configurado por `VITE_API_URL`, com uma instância por aluno;
 - entidades e repositories prontos ou parcialmente prontos;
 - um fluxo de `Board` implementado como exemplo;
 - um teste unitário de exemplo;

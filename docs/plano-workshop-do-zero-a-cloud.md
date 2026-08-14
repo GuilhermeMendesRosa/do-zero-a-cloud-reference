@@ -241,19 +241,20 @@ server.port=${PORT:8080}
 
 ## Frontend
 
-O frontend deverá permitir que cada grupo informe a URL de sua API:
+Cada aluno publicará uma instância própria do frontend, ligada à sua API pela
+variável de ambiente de build:
 
 ```text
-URL da API:
-[ https://backend-grupo.up.railway.app ]
-
-[ Conectar ]
+VITE_API_URL=https://backend-aluno.up.railway.app
 ```
 
-A URL pode ser armazenada no `localStorage`. Isso evita configurar uma variável
-de build e republicar o frontend sempre que a URL mudar.
+A interface não solicitará a URL da API e não armazenará essa configuração no
+`localStorage`. Se a URL mudar, o aluno deverá atualizar `VITE_API_URL` e
+republicar seu frontend.
 
-O backend deverá aceitar o domínio do frontend em sua configuração de CORS.
+Para simplificar o workshop, o backend aceitará requisições de qualquer origem
+nos endpoints `/api/**`. Essa liberação deverá ser restringida antes de usar a
+aplicação em um cenário real com autenticação ou dados sensíveis.
 
 ## Estratégia de segurança contra atrasos
 

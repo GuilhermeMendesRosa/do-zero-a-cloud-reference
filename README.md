@@ -16,3 +16,6 @@ A proposta técnica baseada no desafio da Ottimizza está em
 
 A implementação de referência do backend está em
 [projetos/kanban-backend](projetos/kanban-backend).
+
+O frontend React com shadcn/ui está em
+[projetos/kanban-frontend](projetos/kanban-frontend).
