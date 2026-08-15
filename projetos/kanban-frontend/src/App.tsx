@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { type DragEndEvent } from "@dnd-kit/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Cloud, LayoutDashboard, MoreHorizontal, Pencil, Plus, RefreshCw, Trash2, WifiOff } from "lucide-react"
+import { Cloud, LayoutDashboard, MoreHorizontal, Pencil, Plus, RefreshCw, Settings, Trash2, WifiOff } from "lucide-react"
 import { toast } from "sonner"
 import { api, errorMessage, loadBoard, type Board, type BoardColumn, type Task } from "@/lib/api"
 import { moveTask, persistOptimistically, reorderColumns } from "@/lib/board"
@@ -9,12 +9,14 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ConfirmAction, NameDialog, type TaskFormValues } from "@/components/forms"
 import { KanbanBoard } from "@/components/kanban-board"
+import { ApiAudit } from "@/components/api-audit"
 
 const boardsKey = ["boards"] as const
 const boardKey = (id: string) => ["board", id] as const
 
 export default function App() {
   const queryClient = useQueryClient()
+  const [activeView, setActiveView] = useState<"kanban" | "settings">("kanban")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [newBoardOpen, setNewBoardOpen] = useState(false)
   const [editBoard, setEditBoard] = useState<Board | null>(null)
@@ -78,6 +80,11 @@ export default function App() {
     }
   }
 
+  const refreshAfterAudit = async () => {
+    await queryClient.invalidateQueries({ queryKey: boardsKey })
+    if (selectedId) await queryClient.invalidateQueries({ queryKey: boardKey(selectedId) })
+  }
+
   const content = useMemo(() => {
     if (boardsQuery.isLoading) return <LoadingState label="Carregando seus quadros…" />
     if (boardsQuery.isError) return <ErrorState message={errorMessage(boardsQuery.error)} onRetry={() => boardsQuery.refetch()} />
@@ -107,8 +114,8 @@ export default function App() {
       <div className="ml-auto flex min-w-0 items-center gap-1 overflow-x-auto md:ml-0 md:block md:overflow-visible">
         <div className="mb-2 hidden items-center justify-between px-2 md:flex"><span className="text-xs font-medium uppercase tracking-wider text-neutral-400">Quadros</span><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setNewBoardOpen(true)} aria-label="Novo quadro"><Plus className="h-4 w-4" /></Button></div>
         <nav className="flex gap-1 md:block md:space-y-1" aria-label="Quadros">
-          {boards.map((board) => <div key={board.id} className={`group flex shrink-0 items-center rounded-lg ${selectedId === board.id ? "bg-neutral-100" : "hover:bg-neutral-50"}`}>
-            <button className="max-w-40 flex-1 truncate px-3 py-2 text-left text-sm font-medium md:max-w-none" onClick={() => setSelectedId(board.id)}>{board.name}</button>
+          {boards.map((board) => <div key={board.id} className={`group flex shrink-0 items-center rounded-lg ${activeView === "kanban" && selectedId === board.id ? "bg-neutral-100" : "hover:bg-neutral-50"}`}>
+            <button className="max-w-40 flex-1 truncate px-3 py-2 text-left text-sm font-medium md:max-w-none" onClick={() => { setSelectedId(board.id); setActiveView("kanban") }}>{board.name}</button>
             <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="mr-1 hidden h-7 w-7 group-hover:inline-flex data-[state=open]:inline-flex md:flex md:opacity-0 md:group-hover:opacity-100"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger><DropdownMenuContent align="end">
               <DropdownMenuItem onSelect={() => setEditBoard(board)}><Pencil className="h-4 w-4" />Renomear</DropdownMenuItem>
               <ConfirmAction title="Excluir quadro?" description="Todas as colunas e tarefas deste quadro serão excluídas." onConfirm={() => run(() => api.deleteBoard(board.id), "Quadro excluído", false)}><DropdownMenuItem onSelect={(event) => event.preventDefault()} className="text-red-600"><Trash2 className="h-4 w-4" />Excluir</DropdownMenuItem></ConfirmAction>
@@ -116,12 +123,16 @@ export default function App() {
           </div>)}
         </nav>
         <Button variant="outline" size="sm" className="ml-1 shrink-0 md:hidden" onClick={() => setNewBoardOpen(true)}><Plus className="h-4 w-4" />Quadro</Button>
+        <Button variant="ghost" size="sm" className={`ml-1 shrink-0 md:hidden ${activeView === "settings" ? "bg-neutral-100" : ""}`} onClick={() => setActiveView("settings")}><Settings className="h-4 w-4" />Configurações</Button>
       </div>
-      <div className="mt-auto hidden rounded-xl border border-neutral-200 p-3 md:block"><div className="flex items-center gap-2 text-xs font-medium"><Cloud className={`h-4 w-4 ${boardsQuery.isError ? "text-red-500" : "text-emerald-600"}`} />{boardsQuery.isError ? "API desconectada" : boardsQuery.isLoading ? "Conectando à API…" : "API conectada"}</div><p className="mt-1 truncate text-xs text-neutral-400">{boardsQuery.isError ? "Verifique a configuração e o CORS" : "Dados persistidos no backend"}</p></div>
+      <div className="mt-auto hidden space-y-3 md:block">
+        <button className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${activeView === "settings" ? "bg-neutral-100 text-neutral-950" : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950"}`} onClick={() => setActiveView("settings")}><Settings className="h-4 w-4" />Configurações</button>
+        <div className="rounded-xl border border-neutral-200 p-3"><div className="flex items-center gap-2 text-xs font-medium"><Cloud className={`h-4 w-4 ${boardsQuery.isError ? "text-red-500" : "text-emerald-600"}`} />{boardsQuery.isError ? "API desconectada" : boardsQuery.isLoading ? "Conectando à API…" : "API conectada"}</div><p className="mt-1 truncate text-xs text-neutral-400">{boardsQuery.isError ? "Verifique a configuração e o CORS" : "Dados persistidos no backend"}</p></div>
+      </div>
     </aside>
     <main className="flex min-h-dvh min-w-0 flex-1 flex-col pt-16 md:pt-0">
-      <header className="flex h-20 shrink-0 items-center justify-between px-6 md:px-8"><div className="min-w-0"><p className="text-xs font-medium uppercase tracking-widest text-neutral-400">Meu quadro</p><h1 className="truncate text-xl font-semibold md:text-2xl">{selectedBoard?.name ?? "Seus projetos"}</h1></div>{selectedBoard && <Button variant="outline" size="sm" onClick={() => boardQuery.refetch()} disabled={boardQuery.isFetching}><RefreshCw className={`h-4 w-4 ${boardQuery.isFetching ? "animate-spin" : ""}`} />Atualizar</Button>}</header>
-      <div className="flex min-h-0 flex-1 flex-col bg-neutral-50/60">{content}</div>
+      <header className="flex h-20 shrink-0 items-center justify-between px-6 md:px-8"><div className="min-w-0"><p className="text-xs font-medium uppercase tracking-widest text-neutral-400">{activeView === "settings" ? "Configurações" : "Meu quadro"}</p><h1 className="truncate text-xl font-semibold md:text-2xl">{activeView === "settings" ? "Auditoria da API" : selectedBoard?.name ?? "Seus projetos"}</h1></div>{activeView === "kanban" && selectedBoard && <Button variant="outline" size="sm" onClick={() => boardQuery.refetch()} disabled={boardQuery.isFetching}><RefreshCw className={`h-4 w-4 ${boardQuery.isFetching ? "animate-spin" : ""}`} />Atualizar</Button>}</header>
+      <div className="flex min-h-0 flex-1 flex-col bg-neutral-50/60">{activeView === "settings" ? <ApiAudit onFinished={refreshAfterAudit} /> : content}</div>
     </main>
     <NameDialog open={newBoardOpen} onOpenChange={setNewBoardOpen} title="Novo quadro" description="Crie um espaço para organizar seu projeto." submitLabel="Criar quadro" onSubmit={(name) => run(() => api.createBoard(name), "Quadro criado", false)} />
     <NameDialog open={Boolean(editBoard)} onOpenChange={(open) => !open && setEditBoard(null)} title="Renomear quadro" description="Atualize o nome deste projeto." initialName={editBoard?.name} onSubmit={(name) => run(() => api.updateBoard(editBoard!.id, name), "Quadro atualizado", false)} />
