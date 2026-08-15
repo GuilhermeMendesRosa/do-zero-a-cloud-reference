@@ -11,6 +11,12 @@ O workshop foi pensado para duas aulas:
 O planejamento completo está em
 [docs/plano-workshop-do-zero-a-cloud.md](docs/plano-workshop-do-zero-a-cloud.md).
 
+A ementa definida para o primeiro dia está em
+[docs/ementa-dia-1-fundamentos-backend.md](docs/ementa-dia-1-fundamentos-backend.md).
+
+O conteúdo de referência detalhado do primeiro dia está em
+[docs/conteudo-referencia-dia-1-backend.md](docs/conteudo-referencia-dia-1-backend.md).
+
 A proposta técnica baseada no desafio da Ottimizza está em
 [docs/proposta-implementacao-kanban.md](docs/proposta-implementacao-kanban.md).
 
