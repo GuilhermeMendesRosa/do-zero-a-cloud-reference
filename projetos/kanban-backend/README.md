@@ -1,11 +1,11 @@
 # Kanban Backend
 
-API REST em Java 21 e Spring Boot 4 para gerenciar quadros Kanban, colunas e
+API REST em Java 17 e Spring Boot 4 para gerenciar quadros Kanban, colunas e
 tarefas. A implementação segue o contrato do desafio da Ottimizza.
 
 ## Requisitos
 
-- Java 21;
+- Java 17;
 - PostgreSQL 14 ou superior;
 - banco local `kanban` acessível pela aplicação.
 
@@ -26,10 +26,10 @@ DB_PASSWORD=postgres
 
 Depois da inicialização:
 
-- API: `http://localhost:8080/api/v1`;
-- Swagger UI: `http://localhost:8080/swagger-ui.html`;
-- OpenAPI JSON: `http://localhost:8080/v3/api-docs`;
-- health check: `http://localhost:8080/actuator/health`.
+- API: `http://localhost:8090/api/v1`;
+- Swagger UI: `http://localhost:8090/swagger-ui.html`;
+- OpenAPI JSON: `http://localhost:8090/v3/api-docs`;
+- health check: `http://localhost:8090/actuator/health`.
 
 ## Testar
 

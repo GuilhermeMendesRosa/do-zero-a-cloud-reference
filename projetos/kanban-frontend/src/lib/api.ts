@@ -48,7 +48,7 @@ export class ApiError extends Error {
 }
 
 const configuredUrl = import.meta.env.VITE_API_URL?.trim()
-export const API_ORIGIN = (configuredUrl || (import.meta.env.DEV ? "http://localhost:8080" : "")).replace(/\/+$/, "")
+export const API_ORIGIN = (configuredUrl || (import.meta.env.DEV ? "http://localhost:8090" : "")).replace(/\/+$/, "")
 export const API_URL = `${API_ORIGIN}/api/v1`
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {

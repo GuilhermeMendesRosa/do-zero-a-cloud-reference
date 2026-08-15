@@ -21,7 +21,7 @@ banco PostgreSQL publicados no Railway.
 
 ## Tecnologias
 
-- Java 21;
+- Java 17;
 - Spring Boot;
 - Spring Web;
 - Spring Data JPA;
@@ -236,7 +236,7 @@ SPRING_DATASOURCE_PASSWORD=${{Postgres.PGPASSWORD}}
 O backend também deverá respeitar a porta fornecida pelo ambiente:
 
 ```properties
-server.port=${PORT:8080}
+server.port=${PORT:8090}
 ```
 
 ## Frontend

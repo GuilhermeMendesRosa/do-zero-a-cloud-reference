@@ -12,7 +12,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Por padrão, o frontend usa `http://localhost:8080`. Para outra API, altere o `.env`:
+Por padrão, o frontend usa `http://localhost:8090`. Para outra API, altere o `.env`:
 
 ```text
 VITE_API_URL=https://seu-backend.up.railway.app

@@ -309,10 +309,10 @@ SPRING_PROFILES_ACTIVE=cloud
 SPRING_DATASOURCE_URL=jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}
 SPRING_DATASOURCE_USERNAME=${{Postgres.PGUSER}}
 SPRING_DATASOURCE_PASSWORD=${{Postgres.PGPASSWORD}}
-PORT=8080
+PORT=8090
 ```
 
-A aplicação deverá usar `server.port=${PORT:8080}` e expor
+A aplicação deverá usar `server.port=${PORT:8090}` e expor
 `/actuator/health` para diagnóstico do deploy.
 
 ## 9. Estratégia de testes
@@ -347,7 +347,7 @@ referência poderá usar JaCoCo para tornar lacunas visíveis.
 
 Para preservar tempo de prática, o repositório inicial deverá conter:
 
-- projeto Maven com Java 21 e Spring Boot 4;
+- projeto Maven com Java 17 e Spring Boot 4;
 - dependências Web, Data JPA, Validation, PostgreSQL, Actuator e OpenAPI;
 - profiles `local` e `cloud`;
 - Dockerfile;

@@ -54,7 +54,7 @@ class ColumnServiceTest {
         List<ColumnResponse> response = columnService.listByBoard(board.getId());
 
         assertEquals(1, response.size());
-        assertEquals(board.getId(), response.getFirst().boardId());
+        assertEquals(board.getId(), response.get(0).boardId());
     }
 
     @Test
