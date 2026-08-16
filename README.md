@@ -17,6 +17,12 @@ A ementa definida para o primeiro dia está em
 O conteúdo de referência detalhado do primeiro dia está em
 [docs/conteudo-referencia-dia-1-backend.md](docs/conteudo-referencia-dia-1-backend.md).
 
+A ementa definida para o segundo dia está em
+[docs/ementa-dia-2-cloud.md](docs/ementa-dia-2-cloud.md).
+
+O conteúdo de referência detalhado do segundo dia está em
+[docs/conteudo-referencia-dia-2-cloud.md](docs/conteudo-referencia-dia-2-cloud.md).
+
 A proposta técnica baseada no desafio da Ottimizza está em
 [docs/proposta-implementacao-kanban.md](docs/proposta-implementacao-kanban.md).
 
