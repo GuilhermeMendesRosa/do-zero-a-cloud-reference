@@ -12,10 +12,13 @@ FROM caddy:2-alpine
 
 WORKDIR /srv
 
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build --chown=caddy:caddy /app/dist /srv
+RUN addgroup --system app && adduser --system --ingroup app app \
+    && chown -R app:app /config /data
 
-USER caddy
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from=build --chown=app:app /app/dist /srv
+
+USER app
 
 EXPOSE 3000
 
