@@ -1,3 +1,5 @@
+import { configuredApiOrigin } from "@/lib/config"
+
 export interface Board {
   id: string
   name: string
@@ -47,15 +49,10 @@ export class ApiError extends Error {
   }
 }
 
-const configuredUrl = import.meta.env.VITE_API_URL?.trim()
-export const API_ORIGIN = (configuredUrl || (import.meta.env.DEV ? "http://localhost:8090" : "")).replace(/\/+$/, "")
+export const API_ORIGIN = configuredApiOrigin()
 export const API_URL = `${API_ORIGIN}/api/v1`
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  if (!API_ORIGIN) {
-    throw new ApiError(0, { title: "API não configurada", detail: "Defina VITE_API_URL antes de publicar o frontend." })
-  }
-
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: { "Content-Type": "application/json", ...options?.headers },

@@ -25,14 +25,22 @@ Informe apenas a origem, sem `/api/v1`; o cliente acrescenta esse prefixo automa
 ```bash
 npm run dev       # servidor de desenvolvimento
 npm run build     # build de produção em dist/
-npm run start     # serve o build usando PORT ou a porta 4173
+npm run preview   # pré-visualiza o build localmente
 ```
 
 ## Publicar no Railway
 
 1. Crie um serviço a partir do seu repositório.
 2. Defina o diretório raiz do serviço como `/projetos/kanban-frontend`.
-3. Adicione `VITE_API_URL` com a URL pública do seu backend.
-4. Publique o serviço. O `railway.toml` contém os comandos de build e inicialização.
+3. Em **Config File Path**, informe `/projetos/kanban-frontend/railway.toml`.
+4. Adicione `VITE_API_URL` com a URL pública do backend. Se o serviço do backend se chamar `backend`, use uma referência:
 
-Cada aluno publica seu próprio frontend e backend. A URL da API é incorporada durante o build, portanto uma alteração em `VITE_API_URL` exige novo deploy do frontend.
+   ```text
+   VITE_API_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}
+   ```
+
+5. Publique o serviço. O Railway detectará o `Dockerfile`, construirá o frontend e executará o Caddy na porta fornecida pela plataforma.
+
+O container lê `VITE_API_URL` quando inicia. A mesma imagem pode, portanto, ser usada com backends diferentes sem um novo build. Na ausência da variável, o frontend utiliza `http://localhost:8090`.
+
+`VITE_API_URL` é exposta ao navegador e deve conter somente a origem pública da API, sem credenciais e sem `/api/v1`. O cliente acrescenta esse prefixo automaticamente.
