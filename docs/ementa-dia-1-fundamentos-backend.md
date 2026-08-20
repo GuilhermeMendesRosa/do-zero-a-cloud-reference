@@ -62,10 +62,10 @@ Ao final do dia, espera-se que o participante seja capaz de:
 
 Fundamentos de sistemas backend. Arquitetura cliente-servidor e
 responsabilidades do backend. Processamento de regras de negócio, persistência
-e integração entre sistemas. Comunicação por HTTP, representação de dados com
-JSON e construção de APIs REST. Recursos, endpoints, contratos e comunicação
-síncrona e assíncrona. Organização interna, separação de responsabilidades,
-entidades, DTOs, validação e tratamento de erros. Estado, bancos de dados,
+relacional e integração entre sistemas. Comunicação por HTTP, representação de
+dados com JSON e construção de APIs REST. Recursos, endpoints, contratos e
+comunicação síncrona e assíncrona. Organização interna, separação de
+responsabilidades, entidades, DTOs, validação e tratamento de erros. Estado,
 transações e consistência. Princípios básicos de segurança, autenticação,
 autorização e CORS. Fundamentos de testes automatizados. Monólitos, monólitos
 modulares e microsserviços. Cache, mensageria e arquitetura orientada a eventos.
@@ -84,9 +84,7 @@ com Spring Boot.
 - persistência e recuperação de dados;
 - validação e segurança;
 - integrações com outros sistemas;
-- atendimento de múltiplos clientes;
-- backend para além de APIs REST: tarefas agendadas, filas, eventos e
-  processamento em segundo plano.
+- atendimento de múltiplos clientes.
 
 ### 6.2. HTTP, JSON e APIs
 
@@ -95,7 +93,6 @@ com Spring Boot.
 - JSON, serialização e desserialização;
 - APIs, recursos, endpoints e contratos;
 - parâmetros de rota e de consulta;
-- princípios de REST;
 - operações CRUD;
 - comunicação síncrona e assíncrona.
 
@@ -108,7 +105,7 @@ com Spring Boot.
 - entidades e DTOs;
 - coesão e baixo acoplamento;
 - dados em memória e dados persistentes;
-- bancos relacionais e não relacionais;
+- persistência em bancos relacionais;
 - transações e consistência;
 - SQL e mapeamento objeto-relacional.
 
@@ -119,9 +116,7 @@ com Spring Boot.
 - respostas de erro consistentes;
 - autenticação e autorização;
 - proteção de dados e informações sensíveis;
-- política de mesma origem dos navegadores;
-- definição de origem por protocolo, host e porta;
-- CORS, headers de permissão e requisições de preflight;
+- CORS como configuração para comunicação entre frontend e API;
 - limites de CORS como mecanismo de segurança.
 
 ### 6.5. Testes automatizados
