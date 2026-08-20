@@ -1,10 +1,15 @@
 package br.udesc.kanban_backend.board;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import br.udesc.kanban_backend.column.BoardColumn;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +21,9 @@ public class Board {
 
     @Column(nullable = false, length = 120)
     private String name;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<BoardColumn> columns = new ArrayList<>();
 
     protected Board() {
     }

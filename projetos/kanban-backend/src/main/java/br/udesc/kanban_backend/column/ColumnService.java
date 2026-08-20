@@ -1,11 +1,10 @@
 package br.udesc.kanban_backend.column;
 
 import br.udesc.kanban_backend.board.Board;
-import br.udesc.kanban_backend.board.BoardRepository;
+import br.udesc.kanban_backend.board.BoardService;
 import br.udesc.kanban_backend.column.dto.ColumnRequest;
 import br.udesc.kanban_backend.column.dto.ColumnResponse;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
-import br.udesc.kanban_backend.task.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,22 +15,19 @@ import java.util.UUID;
 public class ColumnService {
 
     private final ColumnRepository columnRepository;
-    private final BoardRepository boardRepository;
-    private final TaskRepository taskRepository;
+    private final BoardService boardService;
 
     public ColumnService(
             ColumnRepository columnRepository,
-            BoardRepository boardRepository,
-            TaskRepository taskRepository
+            BoardService boardService
     ) {
         this.columnRepository = columnRepository;
-        this.boardRepository = boardRepository;
-        this.taskRepository = taskRepository;
+        this.boardService = boardService;
     }
 
     @Transactional(readOnly = true)
     public List<ColumnResponse> listByBoard(UUID boardId) {
-        ensureBoardExists(boardId);
+        boardService.findBoard(boardId);
         return columnRepository.findByBoard_IdOrderByPositionAsc(boardId).stream()
                 .map(ColumnService::toResponse)
                 .toList();
@@ -59,24 +55,15 @@ public class ColumnService {
     @Transactional
     public void delete(UUID columnId) {
         BoardColumn column = findColumn(columnId);
-        taskRepository.deleteAll(taskRepository.findByColumn_IdOrderByPositionAsc(columnId));
         columnRepository.delete(column);
     }
 
-    private void ensureBoardExists(UUID boardId) {
-        if (!boardRepository.existsById(boardId)) {
-            throw new ResourceNotFoundException("Quadro %s não encontrado".formatted(boardId));
-        }
-    }
-
     private Board findBoard(UUID boardId) {
-        return boardRepository.findById(boardId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Quadro %s não encontrado".formatted(boardId)
-                ));
+        return boardService.findBoard(boardId);
     }
 
-    private BoardColumn findColumn(UUID columnId) {
+    @Transactional(readOnly = true)
+    public BoardColumn findColumn(UUID columnId) {
         return columnRepository.findById(columnId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Coluna %s não encontrada".formatted(columnId)

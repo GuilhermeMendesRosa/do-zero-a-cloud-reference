@@ -1,7 +1,7 @@
 package br.udesc.kanban_backend.task;
 
 import br.udesc.kanban_backend.column.BoardColumn;
-import br.udesc.kanban_backend.column.ColumnRepository;
+import br.udesc.kanban_backend.column.ColumnService;
 import br.udesc.kanban_backend.shared.BadRequestException;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
 import br.udesc.kanban_backend.task.dto.CreateTaskRequest;
@@ -22,18 +22,18 @@ import java.util.UUID;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final ColumnRepository columnRepository;
+    private final ColumnService columnService;
     private final Clock clock;
 
-    public TaskService(TaskRepository taskRepository, ColumnRepository columnRepository, Clock clock) {
+    public TaskService(TaskRepository taskRepository, ColumnService columnService, Clock clock) {
         this.taskRepository = taskRepository;
-        this.columnRepository = columnRepository;
+        this.columnService = columnService;
         this.clock = clock;
     }
 
     @Transactional(readOnly = true)
     public List<TaskResponse> listByColumn(UUID columnId) {
-        ensureColumnExists(columnId);
+        columnService.findColumn(columnId);
         return taskRepository.findByColumn_IdOrderByPositionAsc(columnId).stream()
                 .map(TaskService::toResponse)
                 .toList();
@@ -110,17 +110,8 @@ public class TaskService {
         }
     }
 
-    private void ensureColumnExists(UUID columnId) {
-        if (!columnRepository.existsById(columnId)) {
-            throw new ResourceNotFoundException("Coluna %s não encontrada".formatted(columnId));
-        }
-    }
-
     private BoardColumn findColumn(UUID columnId) {
-        return columnRepository.findById(columnId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Coluna %s não encontrada".formatted(columnId)
-                ));
+        return columnService.findColumn(columnId);
     }
 
     private KanbanTask findTask(UUID taskId) {

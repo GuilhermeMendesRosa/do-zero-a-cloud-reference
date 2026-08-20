@@ -2,11 +2,7 @@ package br.udesc.kanban_backend.board;
 
 import br.udesc.kanban_backend.board.dto.BoardRequest;
 import br.udesc.kanban_backend.board.dto.BoardResponse;
-import br.udesc.kanban_backend.column.BoardColumn;
-import br.udesc.kanban_backend.column.ColumnRepository;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
-import br.udesc.kanban_backend.task.KanbanTask;
-import br.udesc.kanban_backend.task.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +10,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,17 +25,11 @@ class BoardServiceTest {
     @Mock
     private BoardRepository boardRepository;
 
-    @Mock
-    private ColumnRepository columnRepository;
-
-    @Mock
-    private TaskRepository taskRepository;
-
     private BoardService boardService;
 
     @BeforeEach
     void setUp() {
-        boardService = new BoardService(boardRepository, columnRepository, taskRepository);
+        boardService = new BoardService(boardRepository);
     }
 
     @Test
@@ -91,27 +80,13 @@ class BoardServiceTest {
     }
 
     @Test
-    void shouldDeleteBoardColumnsAndTasks() {
+    void shouldDeleteBoardAndRelyOnEntityCascadeForChildren() {
         UUID boardId = UUID.randomUUID();
         Board board = new Board("Projeto");
-        BoardColumn column = new BoardColumn("A fazer", 0, board);
-        KanbanTask task = new KanbanTask(
-                "Tarefa",
-                0,
-                Instant.parse("2026-02-05T10:00:00Z"),
-                null,
-                false,
-                List.of(),
-                column
-        );
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
-        when(columnRepository.findByBoard_IdOrderByPositionAsc(boardId)).thenReturn(List.of(column));
-        when(taskRepository.findByColumn_IdOrderByPositionAsc(column.getId())).thenReturn(List.of(task));
 
         boardService.delete(boardId);
 
-        verify(taskRepository).deleteAll(List.of(task));
-        verify(columnRepository).deleteAll(List.of(column));
         verify(boardRepository).delete(board);
     }
 }

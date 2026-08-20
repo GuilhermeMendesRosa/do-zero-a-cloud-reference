@@ -2,7 +2,7 @@ package br.udesc.kanban_backend.task;
 
 import br.udesc.kanban_backend.board.Board;
 import br.udesc.kanban_backend.column.BoardColumn;
-import br.udesc.kanban_backend.column.ColumnRepository;
+import br.udesc.kanban_backend.column.ColumnService;
 import br.udesc.kanban_backend.shared.BadRequestException;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
 import br.udesc.kanban_backend.task.dto.CreateTaskRequest;
@@ -39,14 +39,14 @@ class TaskServiceTest {
     private TaskRepository taskRepository;
 
     @Mock
-    private ColumnRepository columnRepository;
+    private ColumnService columnService;
 
     private TaskService taskService;
 
     @BeforeEach
     void setUp() {
         Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
-        taskService = new TaskService(taskRepository, columnRepository, clock);
+        taskService = new TaskService(taskRepository, columnService, clock);
     }
 
     @Test
@@ -54,7 +54,7 @@ class TaskServiceTest {
         BoardColumn column = newColumn();
         KanbanTask first = newTask("Primeira", 0, column);
         KanbanTask second = newTask("Segunda", 1, column);
-        when(columnRepository.existsById(column.getId())).thenReturn(true);
+        when(columnService.findColumn(column.getId())).thenReturn(column);
         when(taskRepository.findByColumn_IdOrderByPositionAsc(column.getId()))
                 .thenReturn(List.of(first, second));
 
@@ -66,7 +66,7 @@ class TaskServiceTest {
     @Test
     void shouldRejectListWhenColumnDoesNotExist() {
         UUID columnId = UUID.randomUUID();
-        when(columnRepository.existsById(columnId)).thenReturn(false);
+        when(columnService.findColumn(columnId)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> taskService.listByColumn(columnId));
     }
@@ -83,7 +83,7 @@ class TaskServiceTest {
                 List.of(" backend ", "spring"),
                 column.getId()
         );
-        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        when(columnService.findColumn(column.getId())).thenReturn(column);
         when(taskRepository.save(any(KanbanTask.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         TaskResponse response = taskService.create(column.getId(), request);
@@ -109,7 +109,7 @@ class TaskServiceTest {
                 List.of(),
                 column.getId()
         );
-        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        when(columnService.findColumn(column.getId())).thenReturn(column);
         when(taskRepository.save(any(KanbanTask.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         TaskResponse response = taskService.create(column.getId(), request);
@@ -140,7 +140,7 @@ class TaskServiceTest {
                 List.of(),
                 column.getId()
         );
-        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        when(columnService.findColumn(column.getId())).thenReturn(column);
 
         assertThrows(BadRequestException.class, () -> taskService.create(column.getId(), request));
     }
@@ -151,7 +151,7 @@ class TaskServiceTest {
         CreateTaskRequest request = new CreateTaskRequest(
                 "Tarefa", 0, NOW, null, false, List.of("backend", "backend"), column.getId()
         );
-        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        when(columnService.findColumn(column.getId())).thenReturn(column);
 
         assertThrows(BadRequestException.class, () -> taskService.create(column.getId(), request));
     }
@@ -171,7 +171,7 @@ class TaskServiceTest {
                 destinationColumn.getId()
         );
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
-        when(columnRepository.findById(destinationColumn.getId())).thenReturn(Optional.of(destinationColumn));
+        when(columnService.findColumn(destinationColumn.getId())).thenReturn(destinationColumn);
 
         TaskResponse response = taskService.update(task.getId(), request);
 

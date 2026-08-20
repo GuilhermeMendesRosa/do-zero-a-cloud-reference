@@ -2,10 +2,7 @@ package br.udesc.kanban_backend.board;
 
 import br.udesc.kanban_backend.board.dto.BoardRequest;
 import br.udesc.kanban_backend.board.dto.BoardResponse;
-import br.udesc.kanban_backend.column.BoardColumn;
-import br.udesc.kanban_backend.column.ColumnRepository;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
-import br.udesc.kanban_backend.task.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +13,9 @@ import java.util.UUID;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final ColumnRepository columnRepository;
-    private final TaskRepository taskRepository;
 
-    public BoardService(
-            BoardRepository boardRepository,
-            ColumnRepository columnRepository,
-            TaskRepository taskRepository
-    ) {
+    public BoardService(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
-        this.columnRepository = columnRepository;
-        this.taskRepository = taskRepository;
     }
 
     @Transactional(readOnly = true)
@@ -52,16 +41,11 @@ public class BoardService {
     @Transactional
     public void delete(UUID boardId) {
         Board board = findBoard(boardId);
-        List<BoardColumn> columns = columnRepository.findByBoard_IdOrderByPositionAsc(boardId);
-
-        columns.forEach(column -> taskRepository.deleteAll(
-                taskRepository.findByColumn_IdOrderByPositionAsc(column.getId())
-        ));
-        columnRepository.deleteAll(columns);
         boardRepository.delete(board);
     }
 
-    private Board findBoard(UUID boardId) {
+    @Transactional(readOnly = true)
+    public Board findBoard(UUID boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Quadro %s não encontrado".formatted(boardId)
