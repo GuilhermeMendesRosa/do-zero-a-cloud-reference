@@ -4,6 +4,7 @@ import br.udesc.kanban_backend.board.dto.BoardRequest;
 import br.udesc.kanban_backend.board.dto.BoardResponse;
 import br.udesc.kanban_backend.shared.StatusResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +20,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/board")
+@RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
-
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
-    }
 
     @GetMapping
     public List<BoardResponse> list() {

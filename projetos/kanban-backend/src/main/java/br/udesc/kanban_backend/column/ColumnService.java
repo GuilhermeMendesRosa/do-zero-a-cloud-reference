@@ -5,6 +5,7 @@ import br.udesc.kanban_backend.board.BoardService;
 import br.udesc.kanban_backend.column.dto.ColumnRequest;
 import br.udesc.kanban_backend.column.dto.ColumnResponse;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,18 +13,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ColumnService {
 
     private final ColumnRepository columnRepository;
     private final BoardService boardService;
-
-    public ColumnService(
-            ColumnRepository columnRepository,
-            BoardService boardService
-    ) {
-        this.columnRepository = columnRepository;
-        this.boardService = boardService;
-    }
 
     @Transactional(readOnly = true)
     public List<ColumnResponse> listByBoard(UUID boardId) {

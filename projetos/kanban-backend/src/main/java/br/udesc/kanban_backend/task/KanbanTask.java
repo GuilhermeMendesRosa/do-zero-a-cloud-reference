@@ -11,6 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,23 +22,30 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "kanban_tasks")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class KanbanTask {
 
+    @Getter
     @Id
     private UUID id;
 
+    @Getter
     @Column(nullable = false, length = 120)
     private String name;
 
+    @Getter
     @Column(name = "position_index", nullable = false)
     private int position;
 
+    @Getter
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Getter
     @Column(name = "due_date")
     private Instant dueDate;
 
+    @Getter
     @Column(nullable = false)
     private boolean completed;
 
@@ -45,12 +55,10 @@ public class KanbanTask {
     @Column(name = "tag", nullable = false, length = 40)
     private List<String> tags = new ArrayList<>();
 
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "column_id", nullable = false)
     private BoardColumn column;
-
-    protected KanbanTask() {
-    }
 
     public KanbanTask(
             String name,
@@ -71,36 +79,8 @@ public class KanbanTask {
         this.column = column;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getDueDate() {
-        return dueDate;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
     public List<String> getTags() {
         return List.copyOf(tags);
-    }
-
-    public BoardColumn getColumn() {
-        return column;
     }
 
     public void update(

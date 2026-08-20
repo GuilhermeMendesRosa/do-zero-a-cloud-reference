@@ -3,6 +3,7 @@ package br.udesc.kanban_backend.board;
 import br.udesc.kanban_backend.board.dto.BoardRequest;
 import br.udesc.kanban_backend.board.dto.BoardResponse;
 import br.udesc.kanban_backend.shared.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,13 +11,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
-
-    public BoardService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<BoardResponse> list() {

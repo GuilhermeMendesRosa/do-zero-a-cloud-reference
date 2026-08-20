@@ -4,6 +4,7 @@ import br.udesc.kanban_backend.column.dto.ColumnRequest;
 import br.udesc.kanban_backend.column.dto.ColumnResponse;
 import br.udesc.kanban_backend.shared.StatusResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +20,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/column")
+@RequiredArgsConstructor
 public class ColumnController {
 
     private final ColumnService columnService;
-
-    public ColumnController(ColumnService columnService) {
-        this.columnService = columnService;
-    }
 
     @GetMapping("/from/{boardId}")
     public List<ColumnResponse> listByBoard(@PathVariable UUID boardId) {

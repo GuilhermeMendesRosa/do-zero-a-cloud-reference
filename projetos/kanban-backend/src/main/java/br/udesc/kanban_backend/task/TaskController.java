@@ -5,6 +5,7 @@ import br.udesc.kanban_backend.task.dto.CreateTaskRequest;
 import br.udesc.kanban_backend.task.dto.TaskResponse;
 import br.udesc.kanban_backend.task.dto.UpdateTaskRequest;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,13 +21,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/task")
+@RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
 
     @GetMapping("/from/{columnId}")
     public List<TaskResponse> listByColumn(@PathVariable UUID columnId) {

@@ -9,6 +9,10 @@ tarefas. A implementação segue o contrato do desafio da Ottimizza.
 - PostgreSQL 14 ou superior;
 - banco local `kanban` acessível pela aplicação.
 
+O projeto usa Lombok para reduzir boilerplate. Em IDEs, instale o plugin Lombok
+e habilite o processamento de anotações para que construtores e getters gerados
+sejam reconhecidos pelo editor.
+
 
 As credenciais podem ser substituídas por variáveis de ambiente:
 
@@ -17,6 +21,25 @@ DB_URL=jdbc:postgresql://localhost:5432/kanban
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 ```
+
+## Banco de dados e migrations
+
+O schema é versionado com Flyway. Inicie com um banco PostgreSQL vazio: ao
+subir a aplicação, a migration em `src/main/resources/db/migration` é aplicada
+automaticamente e registrada na tabela `flyway_schema_history`.
+
+O Hibernate usa `ddl-auto=validate`: ele confere a compatibilidade entre as
+entidades e o schema, mas não cria ou altera tabelas. Para consultar o histórico
+de migrations, execute no banco:
+
+```sql
+SELECT installed_rank, version, description, success
+FROM flyway_schema_history
+ORDER BY installed_rank;
+```
+
+Bancos criados anteriormente pelo `ddl-auto=update` devem ser recriados antes
+de adotar este fluxo.
 
 ## Executar
 

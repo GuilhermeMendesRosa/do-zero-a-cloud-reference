@@ -7,6 +7,7 @@ import br.udesc.kanban_backend.shared.ResourceNotFoundException;
 import br.udesc.kanban_backend.task.dto.CreateTaskRequest;
 import br.udesc.kanban_backend.task.dto.TaskResponse;
 import br.udesc.kanban_backend.task.dto.UpdateTaskRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,17 +20,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
     private final ColumnService columnService;
     private final Clock clock;
-
-    public TaskService(TaskRepository taskRepository, ColumnService columnService, Clock clock) {
-        this.taskRepository = taskRepository;
-        this.columnService = columnService;
-        this.clock = clock;
-    }
 
     @Transactional(readOnly = true)
     public List<TaskResponse> listByColumn(UUID columnId) {
