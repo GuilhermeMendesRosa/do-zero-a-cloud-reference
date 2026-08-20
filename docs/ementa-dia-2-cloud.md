@@ -45,22 +45,22 @@ Ao final do dia, espera-se que o participante seja capaz de:
 
 - explicar o que é computação em nuvem e reconhecer suas principais
   características;
-- diferenciar IaaS, PaaS, SaaS e o modelo serverless/FaaS;
+- diferenciar IaaS, PaaS e o modelo serverless/FaaS;
 - relacionar abstração, controle, flexibilidade, custo direto e esforço
   operacional;
 - identificar quando máquinas virtuais, containers gerenciados, plataformas
   PaaS ou funções serverless podem ser escolhas adequadas;
-- distinguir Dockerfile, imagem, registry e container;
+- distinguir Dockerfile, imagem e container;
 - descrever o ciclo básico de empacotamento e execução de uma aplicação com
   Docker;
 - reconhecer os papéis de bancos relacionais gerenciados, armazenamento de
   objetos e armazenamento efêmero;
-- explicar regiões, zonas de disponibilidade e seu impacto em latência,
-  disponibilidade e custo;
+- explicar regiões, zonas de disponibilidade e seu impacto em latência e
+  disponibilidade;
 - diferenciar escalabilidade vertical e horizontal;
 - explicar o papel de balanceadores de carga, autoscaling e health checks;
-- reconhecer a importância de variáveis de ambiente, secrets, permissões,
-  backups, logs, métricas e alertas;
+- reconhecer a importância de variáveis de ambiente, secrets, princípio do
+  menor privilégio, logs e métricas;
 - relacionar necessidades arquiteturais a serviços equivalentes em AWS,
   Google Cloud, Azure e Railway.
 
@@ -68,18 +68,16 @@ Ao final do dia, espera-se que o participante seja capaz de:
 
 Fundamentos de computação em nuvem. Recursos sob demanda, elasticidade,
 serviços gerenciados e cobrança por uso. Regiões e zonas de disponibilidade.
-Modelos IaaS, PaaS, SaaS e serverless/FaaS. Modelo de responsabilidade
-compartilhada. Trade-offs entre controle, flexibilidade, custo direto e esforço
-operacional. Execução de aplicações em máquinas virtuais, containers,
-plataformas gerenciadas e funções serverless. Dockerfile, imagens, registries,
-containers, portas, variáveis de ambiente, volumes e armazenamento efêmero.
-Bancos de dados relacionais gerenciados, armazenamento de objetos, backups,
-secrets e permissões. DNS, HTTPS e acesso público. Escalabilidade vertical e
-horizontal, balanceamento de carga, autoscaling, aplicações stateless, health
-checks e disponibilidade. Logs, métricas, alertas, deploy, versionamento e
-rollback. Serviços equivalentes em AWS, Google Cloud, Microsoft Azure e
-Railway. Aplicação prática com Spring Boot, Docker, PostgreSQL, GitHub e
-Railway.
+Modelos IaaS, PaaS e serverless/FaaS. Modelo de responsabilidade compartilhada.
+Trade-offs entre controle, flexibilidade, custo direto e esforço operacional.
+Execução de aplicações em máquinas virtuais, containers, plataformas gerenciadas
+e funções serverless. Dockerfile, imagens, containers, portas, variáveis de
+ambiente, volumes e armazenamento efêmero. Bancos de dados relacionais
+gerenciados, armazenamento de objetos, secrets e princípio do menor privilégio.
+DNS, HTTPS e acesso público. Escalabilidade vertical e horizontal, balanceamento
+de carga, autoscaling, aplicações stateless, health checks e disponibilidade.
+Logs e métricas. Serviços equivalentes em AWS, Google Cloud, Microsoft Azure e
+Railway. Aplicação prática com Spring Boot, Docker, PostgreSQL, GitHub e Railway.
 
 ## 6. Conteúdo programático da aula teórica
 
@@ -92,14 +90,12 @@ Railway.
 - serviços gerenciados;
 - cobrança baseada em uso;
 - regiões geográficas e zonas de disponibilidade;
-- impacto da localização em latência, disponibilidade, residência de dados e
-  custo.
+- impacto da localização em latência e disponibilidade.
 
 ### 6.2. Modelos de serviço e responsabilidade
 
 - infraestrutura como serviço — IaaS;
 - plataforma como serviço — PaaS;
-- software como serviço — SaaS;
 - funções como serviço e serverless — FaaS;
 - responsabilidades do provedor e da equipe em cada modelo;
 - responsabilidade compartilhada por infraestrutura, configuração,
@@ -115,7 +111,7 @@ deixa de ser administrada internamente.
 ```text
 mais controle                                      mais abstração
 
-IaaS/VM -> containers gerenciados -> PaaS -> FaaS/SaaS
+IaaS/VM -> containers gerenciados -> PaaS -> FaaS
 
 mais operação pela equipe               mais operação pelo provedor
 maior flexibilidade                        maior conveniência
@@ -148,7 +144,6 @@ menor custo direto, em geral        maior custo direto, em geral
 - Dockerfile como receita de construção;
 - imagem como pacote versionado e imutável da aplicação;
 - container como instância em execução de uma imagem;
-- registry como repositório de imagens;
 - portas e exposição da aplicação;
 - configuração por variáveis de ambiente;
 - volumes, persistência e armazenamento efêmero;
@@ -160,7 +155,7 @@ código-fonte
   -> Dockerfile
   -> build
   -> imagem
-  -> registry ou plataforma
+  -> plataforma
   -> container em execução
 ```
 
@@ -175,8 +170,7 @@ código-fonte
 - configuração por ambiente;
 - variáveis de ambiente e secrets;
 - riscos de credenciais armazenadas no código ou no repositório;
-- identidade, permissões e princípio do menor privilégio;
-- backups, recuperação e disponibilidade dos dados.
+- princípio do menor privilégio ao definir acessos e configurações.
 
 ### 6.6. Rede, escalabilidade e disponibilidade
 
@@ -189,7 +183,6 @@ código-fonte
 - autoscaling baseado em demanda ou métricas;
 - health checks e remoção de instâncias indisponíveis;
 - aplicações stateless;
-- dados, arquivos e sessões fora das instâncias;
 - disponibilidade e tolerância a falhas em nível introdutório.
 
 ```text
@@ -207,25 +200,18 @@ arquivos
 
 - logs para diagnóstico de problemas;
 - métricas de disponibilidade, latência, erros e consumo de recursos;
-- alertas e acompanhamento de falhas;
-- health checks e endpoints de saúde;
-- fluxo entre repositório, build e deploy;
-- versões da aplicação;
-- atualizações, falhas de deploy e rollback;
-- segurança, custo e esforço operacional como critérios permanentes de
-  decisão.
 
 ## 7. Distribuição sugerida da aula teórica
 
 | Duração | Conteúdo |
 |---:|---|
 | 5 min | O que é cloud, regiões e zonas de disponibilidade |
-| 8 min | IaaS, PaaS, SaaS, FaaS e responsabilidade compartilhada |
+| 8 min | IaaS, PaaS, FaaS e responsabilidade compartilhada |
 | 8 min | VM, container gerenciado, PaaS e serverless: quando usar cada opção |
-| 10 min | Dockerfile, imagem, registry, container e armazenamento efêmero |
-| 8 min | Banco, objetos, configurações, secrets, permissões e backups |
+| 10 min | Dockerfile, imagem, container e armazenamento efêmero |
+| 8 min | Banco, objetos, configurações, secrets e menor privilégio |
 | 9 min | DNS, HTTPS, escala, balanceamento, autoscaling e health checks |
-| 7 min | Logs, métricas, alertas, deploy e rollback |
+| 7 min | Logs e métricas |
 | 5 min | Comparação entre provedores e síntese aplicada ao Kanban |
 
 Os serviços dos provedores são apresentados junto aos problemas que resolvem,
@@ -245,8 +231,7 @@ exposição teórica.
 | PostgreSQL provisionado na plataforma | — | — | — | Template PostgreSQL não gerenciado |
 | Armazenamento de objetos | S3 | Cloud Storage | Blob Storage | Storage Buckets compatíveis com S3 |
 | Funções serverless | Lambda | Cloud Run functions | Azure Functions | Não é o foco da plataforma |
-| Logs, métricas e alertas | CloudWatch | Cloud Logging e Cloud Monitoring | Azure Monitor | Runtime Logs e métricas |
-| Identidade e permissões | IAM | IAM | Microsoft Entra ID e Azure RBAC | Permissões do projeto |
+| Logs e métricas | CloudWatch | Cloud Logging e Cloud Monitoring | Azure Monitor | Runtime Logs e métricas |
 | Balanceamento de carga | Elastic Load Balancing | Cloud Load Balancing | Azure Load Balancer e Application Gateway | Gerenciado pela plataforma |
 
 Os nomes dos produtos variam, mas as necessidades arquiteturais permanecem:
