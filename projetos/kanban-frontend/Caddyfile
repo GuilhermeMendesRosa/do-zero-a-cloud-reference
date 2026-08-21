@@ -18,6 +18,7 @@
 	handle {
 		root * /srv
 		encode zstd gzip
+		header Cache-Control "no-cache, must-revalidate"
 		try_files {path} /index.html
 		file_server
 	}

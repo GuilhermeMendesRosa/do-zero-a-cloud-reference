@@ -35,6 +35,7 @@ export default function App() {
   const selectedBoard = boards.find((board) => board.id === selectedId)
   const columns = boardQuery.data ?? []
   const interactionBusy = requestInFlight || boardsQuery.isFetching || boardQuery.isFetching
+  const showRequestOverlay = interactionBusy && !boardsQuery.isLoading && !boardQuery.isLoading
 
   const run = async (operation: () => Promise<unknown>, message: string, invalidateBoard = true) => {
     if (requestInFlightRef.current) return
@@ -151,9 +152,11 @@ export default function App() {
     </main>
     <NameDialog open={newBoardOpen} onOpenChange={setNewBoardOpen} title="Novo quadro" description="Crie um espaço para organizar seu projeto." submitLabel="Criar quadro" pending={interactionBusy} onSubmit={(name) => run(() => api.createBoard(name), "Quadro criado", false)} />
     <NameDialog open={Boolean(editBoard)} onOpenChange={(open) => !open && setEditBoard(null)} title="Renomear quadro" description="Atualize o nome deste projeto." initialName={editBoard?.name} pending={interactionBusy} onSubmit={(name) => run(() => api.updateBoard(editBoard!.id, name), "Quadro atualizado", false)} />
+    {showRequestOverlay && <RequestOverlay label={requestInFlight ? "Salvando alterações…" : "Atualizando dados…"} />}
   </div>
 }
 
+function RequestOverlay({ label }: { label: string }) { return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/10 backdrop-blur-[1px]" role="status" aria-live="polite" aria-label={label}><div className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 shadow-xl"><Loader2 className="h-5 w-5 animate-spin" />{label}</div></div> }
 function LoadingState({ label }: { label: string }) { return <div className="flex flex-1 items-center justify-center"><div className="text-center"><RefreshCw className="mx-auto mb-3 h-5 w-5 animate-spin text-neutral-400" /><p className="text-sm text-neutral-500">{label}</p></div></div> }
 function ErrorState({ message, pending, onRetry }: { message: string; pending: boolean; onRetry: () => void }) { return <div className="flex flex-1 items-center justify-center p-6"><div className="max-w-md rounded-2xl border border-red-100 bg-white p-6 text-center shadow-sm"><WifiOff className="mx-auto mb-3 h-6 w-6 text-red-500" /><h2 className="font-semibold">Falha ao conectar</h2><p className="mt-1 text-sm text-neutral-500">{message}</p><Button className="mt-4" variant="outline" disabled={pending} onClick={onRetry}>{pending && <Loader2 className="h-4 w-4 animate-spin" />}{pending ? "Tentando…" : "Tentar novamente"}</Button></div></div> }
 function NoBoards({ onCreate }: { onCreate: () => void }) { return <div className="flex flex-1 items-center justify-center p-6"><div className="max-w-sm text-center"><div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm"><LayoutDashboard className="h-5 w-5" /></div><h2 className="text-lg font-semibold">Seu primeiro quadro</h2><p className="mt-1 text-sm text-neutral-500">Crie um quadro para começar a organizar colunas e tarefas.</p><Button className="mt-5" onClick={onCreate}><Plus className="h-4 w-4" />Criar quadro</Button></div></div> }
